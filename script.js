@@ -2,6 +2,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import prettyBytes from 'pretty-bytes';
+import setupEditor from './setupEditor';
 
 const form = document.querySelector('[data-form]');
 const queryParamsContainer = document.querySelector('[data-query-params]');
@@ -56,9 +57,7 @@ function updateResponseDetails(res) {
   );
 }
 
-function updateResponseEditor(res) {
-
-}
+const { requestEditor, updateResponseEditor } = setupEditor();
 
 function updateResponseHeaders(headers) {
   responseHeadersContainer.innerHTML = '';
