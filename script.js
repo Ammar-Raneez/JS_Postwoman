@@ -1,6 +1,7 @@
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import prettyBytes from 'pretty-bytes';
 
 const form = document.querySelector('[data-form]');
 const queryParamsContainer = document.querySelector('[data-query-params]');
@@ -48,6 +49,11 @@ form.addEventListener('submit', (e) => {
 function updateResponseDetails(res) {
   document.querySelector('[data-status]').textContent = res.status;
   document.querySelector('[data-time]').textContent = res.customData.time;
+
+  // 1 char === 1 byte, therefore the length would provide the No. of bytes
+  document.querySelector('[data-size]').textContent = prettyBytes(
+    JSON.stringify(res.data).length + JSON.stringify(res.headers).length
+  );
 }
 
 function updateResponseEditor(res) {
