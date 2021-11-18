@@ -11,6 +11,17 @@ const keyValueTemplate = document.querySelector('[data-key-value-template]');
 queryParamsContainer.append(createKeyValuePair());
 requestHeadersContainer.append(createKeyValuePair());
 
+// intercept the req and res to get the resonse time
+axios.interceptors.request.use((req) => {
+  req.customData = req.customData || {};
+  req.customData.startTime = new Date().getTime();
+  return req;
+});
+
+axios.interceptors.response.use(updateEndTime, (e) => {
+  return Promise.reject(updateEndTime(e.response));
+});
+
 document.querySelector('[data-add-query-param-btn]').addEventListener('click', (e) => {
   queryParamsContainer.append(createKeyValuePair());
 });
@@ -31,11 +42,12 @@ form.addEventListener('submit', (e) => {
     updateResponseDetails(res);
     updateResponseEditor(res.data);
     updateResponseHeaders(res.headers);
-  });
+  }).catch((err) => err.response);
 });
 
 function updateResponseDetails(res) {
-
+  document.querySelector('[data-status]').textContent = res.status;
+  document.querySelector('[data-time]').textContent = res.customData.time;
 }
 
 function updateResponseEditor(res) {
@@ -52,6 +64,12 @@ function updateResponseHeaders(headers) {
     valueElement.textContent = value;
     responseHeadersContainer.append(valueElement);
   });
+}
+
+function updateEndTime(res) {
+  res.customData = res.customData || {};
+  res.customData.time = new Date().getTime() - res.config.customData.startTime;
+  return res;
 }
 
 function createKeyValuePair() {
