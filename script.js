@@ -34,11 +34,20 @@ document.querySelector('[data-add-request-header-btn]').addEventListener('click'
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  let data;
+  try {
+    data = JSON.parse(requestEditor.state.doc.toString() || null)
+  } catch {
+    alert('JSON data is malformed');
+    return;
+  }
+
   axios({
     url: document.querySelector('[data-url]').value,
     method: document.querySelector('[data-method]').value,
     params: keyValuePairsToObject(queryParamsContainer),
     headers: keyValuePairsToObject(requestHeadersContainer),
+    data
   }).then((res) => {
     document.querySelector('[data-response-section').classList.remove('d-none');
     updateResponseDetails(res);
